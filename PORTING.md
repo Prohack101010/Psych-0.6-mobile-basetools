@@ -290,18 +290,102 @@ inline function get_controls():Controls
 Add
 ```haxe
 	public static var checkHitbox:Bool = false;
+	
+	var _virtualpad:FlxVirtualPad;
+	public static var mobilec:MobileControls;
+	
+	var trackedinputsUI:Array<FlxActionInput> = [];
+	var trackedinputsNOTES:Array<FlxActionInput> = [];
+
+	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
+		if (_virtualpad != null)
+			removeVirtualPad();
+
+		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.globalAntialiasing);
+		add(_virtualpad);
+
+		controls.setVirtualPadUI(_virtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
+		controls.trackedInputsUI = [];
+	}
+	
+	public function removeVirtualPad() {
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		if (_virtualpad != null)
+			remove(_virtualpad);
+	}
+	
+	public function removeMobileControls() {
+		if (trackedinputsNOTES.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsNOTES);
+			
+		if (mobilec != null)
+			remove(mobilec);
+	}
+	
+	public function addMobileControls() {
+		mobilec = new MobileControls();
+
+		switch (mobilec.mode)
+		{
+			case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
+				controls.setVirtualPadNOTES(mobilec.vpad, FULL, NONE);
+				MusicBeatState.checkHitbox = false;
+			case DUO:
+				controls.setVirtualPadNOTES(mobilec.vpad, DUO, NONE);
+				MusicBeatState.checkHitbox = false;
+			case HITBOX:
+				if(ClientPrefs.hitboxmode != 'New')
+				    controls.setHitBox(mobilec.hbox);
+				else
+				    controls.setNewHitBox(mobilec.newhbox);
+				MusicBeatState.checkHitbox = true;
+			default:
+		}
+
+		trackedinputsNOTES = controls.trackedInputsNOTES;
+		controls.trackedInputsNOTES = [];
+
+		var camcontrol = new flixel.FlxCamera();
+		FlxG.cameras.add(camcontrol, false);
+		camcontrol.bgColor.alpha = 0;
+		mobilec.cameras = [camcontrol];
+
+		add(mobilec);
+	}
+	
+    public function addVirtualPadCamera() {
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_virtualpad.cameras = [camcontrol];
+	}
+	
+	override function destroy() {
+		if (trackedinputsNOTES.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsNOTES);
+
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		super.destroy();
+
+		if (_virtualpad != null)
+			_virtualpad = FlxDestroyUtil.destroy(_virtualpad);
+
+		if (mobilec != null)
+			mobilec = FlxDestroyUtil.destroy(mobilec);
+	}
 ```
 
 6. Setup MusicBeatSubstate.hx
 
 In the lines you import things add
 ```haxe
-#if mobileC
-import mobile.flixel.FlxVirtualPad;
-import flixel.FlxCamera;
 import flixel.input.actions.FlxActionInput;
-import flixel.util.FlxDestroyUtil;
-#end
+import mobile.flixel.FlxVirtualPad;
 ```
 
 After these lines
@@ -312,99 +396,69 @@ inline function get_controls():Controls
 
 Add
 ```haxe
-	#if mobileC
-	var virtualPad:FlxVirtualPad;
-	var trackedInputsVirtualPad:Array<FlxActionInput> = [];
-
-	public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode):Void
-	{
-		if (virtualPad != null)
-			removeVirtualPad();
-
-		virtualPad = new FlxVirtualPad(DPad, Action);
-		add(virtualPad);
-
-		controls.setVirtualPadUI(virtualPad, DPad, Action);
-		trackedInputsVirtualPad = controls.trackedInputsUI;
+	var _virtualpad:FlxVirtualPad;
+	var trackedinputsUI:Array<FlxActionInput> = [];
+	var trackedinputsNOTES:Array<FlxActionInput> = [];
+	
+	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {
+		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.globalAntialiasing);
+		add(_virtualpad);
+		controls.setVirtualPadUI(_virtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
 		controls.trackedInputsUI = [];
 	}
 
-	public function removeVirtualPad():Void
-	{
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
+	public function removeVirtualPad() {
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
 
-		if (virtualPad != null)
-			remove(virtualPad);
+		if (_virtualpad != null)
+			remove(_virtualpad);
 	}
 
-	public function addVirtualPadCamera(DefaultDrawTarget:Bool = true):Void
-	{
-		if (virtualPad != null)
-		{
-			var camControls:FlxCamera = new FlxCamera();
-			camControls.bgColor.alpha = 0;
-			FlxG.cameras.add(camControls, DefaultDrawTarget);
-			virtualPad.cameras = [camControls];
-		}
+	public function addVirtualPadCamera() {
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_virtualpad.cameras = [camcontrol];
 	}
-	#end
-
-	override function destroy():Void
-	{
-		#if mobileC
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-		#end
+	
+	override function destroy() {
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
 
 		super.destroy();
 
-		#if mobileC
-		if (virtualPad != null)
-			virtualPad = FlxDestroyUtil.destroy(virtualPad);
-		#end
+		if (_virtualpad != null)
+			_virtualpad = FlxDestroyUtil.destroy(_virtualpad);
 	}
 ```
 
 And somehow you finished adding the mobile controls to your mod now on every state/substate add
 ```haxe
-#if mobileC
 addVirtualPad(LEFT_FULL, A_B);
-#end
 
 //if you want to remove it at some moment use
-#if mobileC
 removeVirtualPad();
-#end
 
 //if you want it to have a camera
-#if mobileC
-addVirtualPadCamera(); //if hud disappears add false inside to ().
-#end
+addVirtualPadCamera();
 //in states, these need to be added before super.create();
 //in substates, in fuction new at the last line add these
 
 //on Playstate.hx after all of the
 //obj.cameras = [...];
 //things, add
-#if mobileC
-addMobileControls(); //if hud disappears add false inside to ().
-#end
+addMobileControls();
 
 //if you want to remove it at some moment use
-#if mobileC
 removeMobileControls();
-#end
 
 //to make the controls visible the code is
-#if mobileC
 mobileControls.visible = true;
-#end
 
 //to make the controls invisible the code is
-#if mobileC
 mobileControls.visible = false;
-#end
 ```
 
 7. Prevent the Android BACK Button
@@ -432,20 +486,28 @@ You can set one with
 
 9. On `sys.FileSystem`, `sys.io.File` Stuff
 
-This is not working with app storage but on phone storage it will work with this
-```haxe
-SUtil.getStorageDirectory() + 
-```
 This will make the game use the phone storage but you will have to add one thing in your source
 
-In Main.hx before 
+In main.hx after
 ```haxe
-addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+public function new()
 ```
 
 Add
 ```haxe
-SUtil.checkFiles();
+            #if mobile
+	    #if android
+		SUtil.doPermissionsShit();
+		if (!FileSystem.exists(SUtil.getStorageDirectory()))
+			FileSystem.createDirectory(SUtil.getStorageDirectory());
+		#end
+		Sys.setCwd(SUtil.getStorageDirectory());
+		#end
+		
+		#if android
+		if (!FileSystem.exists(SUtil.getStorageDirectory()))
+			FileSystem.createDirectory(SUtil.getStorageDirectory());
+	    #end
 ```
 
 This will check for android storage permisions and the `assets` or `mods` directories
@@ -459,7 +521,7 @@ public function new()
 
 Add
 ```haxe
-SUtil.uncaughtErrorHandler();
+SUtil.gameCrashCheck();
 ```
 
 11. File Saver
@@ -467,13 +529,13 @@ SUtil.uncaughtErrorHandler();
 This is a feature to save files with sys.io.File in phone storage in `saves` directory
 
 ```haxe
-SUtil.saveContent("your file name", ".txt", "lololol");
+SUtil.saveContent("your file name.txt", "lololol");
 ```
 
 12. Do an action when you press on the screen
 
 ```haxe
-#if mobileC
+#if mobile
 var justTouched:Bool = false;
 
 for (touch in FlxG.touches.list)
@@ -483,4 +545,88 @@ for (touch in FlxG.touches.list)
 if (justTouched)
 	//Your code
 #end
+```
+
+13. Now we need to add more thing for Mobile Controls
+
+On ClientPrefs.hx after
+```haxe
+public static var downScroll:Bool = false;
+```
+
+Add
+```haxe
+public static var extraKeys:Int = 2;
+public static var hitboxLocation:String = 'Bottom';
+public static var hitboxmode:String = 'New';
+public static var hitboxtype:String = 'Gradient';
+public static var storageType:String = 'EXTERNAL';
+public static var hitboxhint:Bool = false;
+public static var VirtualPadAlpha:Float = 0.75;
+public static var hitboxalpha:Float = 0.7;
+```
+
+After
+```haxe
+FlxG.save.data.downScroll = downScroll;
+```
+
+Add
+```haxe
+FlxG.save.data.extraKeys = extraKeys;
+FlxG.save.data.hitboxLocation = hitboxLocation;
+FlxG.save.data.hitboxhint = hitboxhint;
+FlxG.save.data.hitboxmode = hitboxmode;
+FlxG.save.data.hitboxtype = hitboxtype;
+FlxG.save.data.storageType = storageType;
+FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
+FlxG.save.data.hitboxalpha = hitboxalpha;
+```
+
+After
+```haxe
+if(FlxG.save.data.downScroll != null) {
+	downScroll = FlxG.save.data.downScroll;
+}
+```
+
+Add
+```haxe
+if(FlxG.save.data.extraKeys != null) {
+	extraKeys = FlxG.save.data.extraKeys;
+}
+if(FlxG.save.data.hitboxLocation != null) {
+	hitboxLocation = FlxG.save.data.hitboxLocation;
+}
+if(FlxG.save.data.hitboxhint != null) {
+	hitboxhint = FlxG.save.data.hitboxhint;
+}
+if(FlxG.save.data.hitboxmode != null) {
+	hitboxmode = FlxG.save.data.hitboxmode;
+}
+if(FlxG.save.data.hitboxtype != null) {
+	hitboxtype = FlxG.save.data.hitboxtype;
+}
+if(FlxG.save.data.storageType != null) {
+	storageType = FlxG.save.data.storageType;
+}
+if(FlxG.save.data.VirtualPadAlpha != null) {
+	VirtualPadAlpha = FlxG.save.data.VirtualPadAlpha;
+}
+if(FlxG.save.data.hitboxalpha != null) {
+	hitboxalpha = FlxG.save.data.hitboxalpha;
+}
+```
+
+14. CopyState (optional)
+
+in Main.hx
+On This Line
+```haxe
+	addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+```
+
+Replace It With
+```haxd
+	addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 ```
