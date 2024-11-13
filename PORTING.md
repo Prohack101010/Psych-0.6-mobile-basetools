@@ -57,12 +57,7 @@ On This Line
 Replace It With
 ```xml
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true" />
-```
-
-Add
-```xml
-	<assets path="mobile" rename="assets/mobile" if="mobileC" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" resizable="false"/>
 ```
 
 Then, After the Libraries, or where the packeges are located add
@@ -72,45 +67,16 @@ Then, After the Libraries, or where the packeges are located add
 
 Add
 ```xml
-	<!--Mobile Controls Define-->
-	<define name="mobileC" if="mobile" /> <!--Can be added windows, mac or linux-->
-
-	<!--Always enable Null Object Reference check-->
-	<haxedef name="HXCPP_CHECK_POINTER" />
-	<haxedef name="HXCPP_STACK_LINE" />
-	<haxedef name="HXCPP_STACK_TRACE" />
-
-	<section if="android">
-		<config>
-			<!--Gradle-->
-			<!--<android gradle-version="7.4.2" gradle-plugin="7.3.1" />--> <!-- ENABLE THIS IF YOU HAVE ISSUES AT COMPILE -->
-
-			<!--Target SDK-->
-			<android min-sdk-version="16" target-sdk-version="29" max-sdk-version="33" if="${lime &lt; 8.1.0}"/>
-                </config>
-	</section>
-
-	<section if="ios">
-		<!--Dependency--> 
-		<dependency name="Metal.framework" if="${lime &lt; 8.0.0}" />
-	</section>
-
-        <haxedef name="no-deprecation-warnings" unless="debug" />
+	<!-- Do whatever you want I'm tired uninstall and install everytime -->
+	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
 ```
 
 4. Setup Controls.hx
 
 After these lines
 ```haxe
-import flixel.input.actions.FlxActionSet;
-import flixel.input.keyboard.FlxKey;
-```
-
-Add
-```haxe
-#if mobileC
-import mobile.flixel.FlxButton;
-import mobile.flixel.FlxHitbox;
+#if mobile
+import flixel.group.FlxGroup;
 import mobile.flixel.FlxVirtualPad;
 #end
 ```
@@ -125,15 +91,11 @@ override function update()
 
 Add
 ```haxe
-	#if mobileC
 	public var trackedInputsUI:Array<FlxActionInput> = [];
 	public var trackedInputsNOTES:Array<FlxActionInput> = [];
 
 	public function addButtonNOTES(action:FlxActionDigital, button:FlxButton, state:FlxInputState):Void
 	{
-		if (button == null)
-			return;
-
 		var input:FlxActionInputDigitalIFlxInput = new FlxActionInputDigitalIFlxInput(button, state);
 		trackedInputsNOTES.push(input);
 		action.add(input);
@@ -148,16 +110,34 @@ Add
 		trackedInputsUI.push(input);
 		action.add(input);
 	}
-
-	public function setHitBox(Hitbox:FlxHitbox):Void
+	
+	public function addHitboxNOTES(action:FlxActionDigital, button:FlxButton, state:FlxInputState)
 	{
-		if (Hitbox == null)
-			return;
+		var input = new FlxActionInputDigitalIFlxInput(button, state);
+		trackedInputsNOTES.push(input);
+		action.add(input);
+	}
 
-		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addButtonNOTES(action, Hitbox.hints[0], state));
-		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addButtonNOTES(action, Hitbox.hints[1], state));
-		inline forEachBound(Control.NOTE_UP, (action, state) -> addButtonNOTES(action, Hitbox.hints[2], state));
-		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addButtonNOTES(action, Hitbox.hints[3], state));
+	public function setHitBox(hitbox:FlxHitbox) 
+	{
+		inline forEachBound(Control.NOTE_UP, (action, state) -> addHitboxNOTES(action, hitbox.buttonUp, state));
+		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addHitboxNOTES(action, hitbox.buttonDown, state));
+		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, hitbox.buttonLeft, state));
+		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, hitbox.buttonRight, state));	
+	}
+	
+	
+	public function setNewHitBox(Hitbox:FlxNewHitbox)
+	{
+		inline forEachBound(Control.NOTE_UP, (action, state) -> addHitboxNOTES(action, Hitbox.buttonUp, state));
+		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addHitboxNOTES(action, Hitbox.buttonDown, state));
+		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonLeft, state));
+		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonRight, state));
+		//Extra Controls Later
+		inline forEachBound(Control.NOTE_UP, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra1, state));
+		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra2, state));
+		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra3, state));
+		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra4, state));
 	}
 
 	public function setVirtualPadUI(VirtualPad:FlxVirtualPad, DPad:FlxDPadMode, Action:FlxActionMode):Void
@@ -167,7 +147,7 @@ Add
 
 		switch (DPad)
 		{
-			case UP_DOWN:
+			case UP_DOWN | OptionsC:
 				inline forEachBound(Control.UI_UP, (action, state) -> addButtonUI(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.UI_DOWN, (action, state) -> addButtonUI(action, VirtualPad.buttonDown, state));
 			case LEFT_RIGHT:
@@ -177,12 +157,12 @@ Add
 				inline forEachBound(Control.UI_UP, (action, state) -> addButtonUI(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.UI_LEFT, (action, state) -> addButtonUI(action, VirtualPad.buttonLeft, state));
 				inline forEachBound(Control.UI_RIGHT, (action, state) -> addButtonUI(action, VirtualPad.buttonRight, state));
-			case LEFT_FULL | RIGHT_FULL:
+			case FULL | RIGHT_FULL | PAUSE | CHART_EDITOR | ALL:
 				inline forEachBound(Control.UI_UP, (action, state) -> addButtonUI(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.UI_DOWN, (action, state) -> addButtonUI(action, VirtualPad.buttonDown, state));
 				inline forEachBound(Control.UI_LEFT, (action, state) -> addButtonUI(action, VirtualPad.buttonLeft, state));
 				inline forEachBound(Control.UI_RIGHT, (action, state) -> addButtonUI(action, VirtualPad.buttonRight, state));
-			case BOTH_FULL:
+			case DUO:
 				inline forEachBound(Control.UI_UP, (action, state) -> addButtonUI(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.UI_DOWN, (action, state) -> addButtonUI(action, VirtualPad.buttonDown, state));
 				inline forEachBound(Control.UI_LEFT, (action, state) -> addButtonUI(action, VirtualPad.buttonLeft, state));
@@ -196,16 +176,21 @@ Add
 
 		switch (Action)
 		{
-			case A:
+			case A | A_C | A_X_Y | ALL:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonUI(action, VirtualPad.buttonA, state));
-			case B:
+			case B | B_X_Y | B_E:
 				inline forEachBound(Control.BACK, (action, state) -> addButtonUI(action, VirtualPad.buttonB, state));
 			case P:
 				inline forEachBound(Control.PAUSE, (action, state) -> addButtonUI(action, VirtualPad.buttonP, state));
-			case A_B | A_B_C | A_B_E | A_B_X_Y | A_B_C_X_Y | A_B_C_X_Y_Z | A_B_C_D_V_X_Y_Z:
+			case A_B | A_B_C | A_B_E | A_B_E_C_M | A_B_X_Y | A_B_C_X_Y | A_B_C_X_Y_Z | FULL | CHART_EDITOR:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonUI(action, VirtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addButtonUI(action, VirtualPad.buttonB, state));
-			case NONE: // do nothing
+			case OptionsC:
+				inline forEachBound(Control.UI_LEFT, (action, state) -> addButtonUI(action, VirtualPad.buttonLeft, state));
+				inline forEachBound(Control.UI_RIGHT, (action, state) -> addButtonUI(action, VirtualPad.buttonRight, state));
+				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonUI(action, VirtualPad.buttonA, state));
+				inline forEachBound(Control.BACK, (action, state) -> addButtonUI(action, VirtualPad.buttonB, state));
+			case NONE | E | controlExtend | D | X_Y: // do nothing
 		}
 	}
 
@@ -216,7 +201,7 @@ Add
 
 		switch (DPad)
 		{
-			case UP_DOWN:
+			case UP_DOWN | OptionsC:
 				inline forEachBound(Control.NOTE_UP, (action, state) -> addButtonNOTES(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.NOTE_DOWN, (action, state) -> addButtonNOTES(action, VirtualPad.buttonDown, state));
 			case LEFT_RIGHT:
@@ -226,12 +211,12 @@ Add
 				inline forEachBound(Control.NOTE_UP, (action, state) -> addButtonNOTES(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.NOTE_LEFT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonLeft, state));
 				inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonRight, state));
-			case LEFT_FULL | RIGHT_FULL:
+			case FULL | RIGHT_FULL | PAUSE | CHART_EDITOR | ALL:
 				inline forEachBound(Control.NOTE_UP, (action, state) -> addButtonNOTES(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.NOTE_DOWN, (action, state) -> addButtonNOTES(action, VirtualPad.buttonDown, state));
 				inline forEachBound(Control.NOTE_LEFT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonLeft, state));
 				inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonRight, state));
-			case BOTH_FULL:
+			case DUO:
 				inline forEachBound(Control.NOTE_UP, (action, state) -> addButtonNOTES(action, VirtualPad.buttonUp, state));
 				inline forEachBound(Control.NOTE_DOWN, (action, state) -> addButtonNOTES(action, VirtualPad.buttonDown, state));
 				inline forEachBound(Control.NOTE_LEFT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonLeft, state));
@@ -245,19 +230,24 @@ Add
 
 		switch (Action)
 		{
-			case A:
+			case A | A_C | A_X_Y | ALL:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonA, state));
-			case B:
+			case B | B_X_Y | B_E:
 				inline forEachBound(Control.BACK, (action, state) -> addButtonNOTES(action, VirtualPad.buttonB, state));
 			case P:
 				inline forEachBound(Control.PAUSE, (action, state) -> addButtonNOTES(action, VirtualPad.buttonP, state));
-			case A_B | A_B_C | A_B_E | A_B_X_Y | A_B_C_X_Y | A_B_C_X_Y_Z | A_B_C_D_V_X_Y_Z:
+			case A_B | A_B_C | A_B_E | A_B_E_C_M | A_B_X_Y | A_B_C_X_Y | A_B_C_X_Y_Z | FULL | CHART_EDITOR:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonA, state));
 				inline forEachBound(Control.BACK, (action, state) -> addButtonNOTES(action, VirtualPad.buttonB, state));
-			case NONE: // do nothing
+			case OptionsC:
+				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonA, state));
+				inline forEachBound(Control.BACK, (action, state) -> addButtonNOTES(action, VirtualPad.buttonB, state));
+				inline forEachBound(Control.NOTE_LEFT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonLeft, state));
+				inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonRight, state));
+			case NONE | E | controlExtend | D | X_Y: // do nothing
 		}
 	}
-
+	
 	public function removeVirtualControlsInput(Tinputs:Array<FlxActionInput>):Void
 	{
 		for (action in this.digitalActions)
@@ -273,21 +263,16 @@ Add
 				}
 			}
 		}
-	}
-	#end
+	}	
 ```
 
 5. Setup MusicBeatState.hx
 
 In the lines you import things add
 ```haxe
-#if mobileC
-import mobile.MobileControls;
-import mobile.flixel.FlxVirtualPad;
-import flixel.FlxCamera;
 import flixel.input.actions.FlxActionInput;
+import mobile.flixel.FlxVirtualPad;
 import flixel.util.FlxDestroyUtil;
-#end
 ```
 
 After these lines
@@ -298,105 +283,7 @@ inline function get_controls():Controls
 
 Add
 ```haxe
-	#if mobileC
-	var mobileControls:MobileControls;
-	var virtualPad:FlxVirtualPad;
-	var trackedInputsMobileControls:Array<FlxActionInput> = [];
-	var trackedInputsVirtualPad:Array<FlxActionInput> = [];
-
-	public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode):Void
-	{
-		if (virtualPad != null)
-			removeVirtualPad();
-
-		virtualPad = new FlxVirtualPad(DPad, Action);
-		add(virtualPad);
-
-		controls.setVirtualPadUI(virtualPad, DPad, Action);
-		trackedInputsVirtualPad = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-	}
-
-	public function removeVirtualPad():Void
-	{
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-
-		if (virtualPad != null)
-			remove(virtualPad);
-	}
-
-	public function addMobileControls(DefaultDrawTarget:Bool = true):Void
-	{
-		if (mobileControls != null)
-			removeMobileControls();
-
-		mobileControls = new MobileControls();
-
-		switch (MobileControls.mode)
-		{
-			case 'Pad-Right' | 'Pad-Left' | 'Pad-Custom':
-				controls.setVirtualPadNOTES(mobileControls.virtualPad, RIGHT_FULL, NONE);
-			case 'Pad-Duo':
-				controls.setVirtualPadNOTES(mobileControls.virtualPad, BOTH_FULL, NONE);
-			case 'Hitbox':
-				controls.setHitBox(mobileControls.hitbox);
-			case 'Keyboard': // do nothing
-		}
-
-		trackedInputsMobileControls = controls.trackedInputsNOTES;
-		controls.trackedInputsNOTES = [];
-
-		var camControls:FlxCamera = new FlxCamera();
-		camControls.bgColor.alpha = 0;
-		FlxG.cameras.add(camControls, DefaultDrawTarget);
-
-		mobileControls.cameras = [camControls];
-		mobileControls.visible = false;
-		add(mobileControls);
-	}
-
-	public function removeMobileControls():Void
-	{
-		if (trackedInputsMobileControls.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsMobileControls);
-
-		if (mobileControls != null)
-			remove(mobileControls);
-	}
-
-	public function addVirtualPadCamera(DefaultDrawTarget:Bool = true):Void
-	{
-		if (virtualPad != null)
-		{
-			var camControls:FlxCamera = new FlxCamera();
-			camControls.bgColor.alpha = 0;
-			FlxG.cameras.add(camControls, DefaultDrawTarget);
-			virtualPad.cameras = [camControls];
-		}
-	}
-	#end
-
-	override function destroy():Void
-	{
-		#if mobileC
-		if (trackedInputsMobileControls.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsMobileControls);
-
-		if (trackedInputsVirtualPad.length > 0)
-			controls.removeVirtualControlsInput(trackedInputsVirtualPad);
-		#end
-
-		super.destroy();
-
-		#if mobileC
-		if (virtualPad != null)
-			virtualPad = FlxDestroyUtil.destroy(virtualPad);
-
-		if (mobileControls != null)
-			mobileControls = FlxDestroyUtil.destroy(mobileControls);
-		#end
-	}
+	public static var checkHitbox:Bool = false;
 ```
 
 6. Setup MusicBeatSubstate.hx
