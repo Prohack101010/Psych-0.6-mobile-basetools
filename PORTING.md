@@ -75,6 +75,12 @@ Add
 
 After these lines
 ```haxe
+import flixel.input.gamepad.FlxGamepadInputID;
+import flixel.input.keyboard.FlxKey;
+```
+
+Add
+```haxe
 #if mobile
 import flixel.group.FlxGroup;
 import mobile.flixel.FlxVirtualPad;
