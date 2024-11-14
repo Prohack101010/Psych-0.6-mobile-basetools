@@ -37,6 +37,77 @@ The apk will be generated in this path (path to source)`\export\release\android\
 
 ## Instructions
 
+-1. Before the start, you need to add a few things for Mobile Controls
+
+On ClientPrefs.hx after
+```haxe
+public static var downScroll:Bool = false;
+```
+
+Add
+```haxe
+public static var extraKeys:Int = 2;
+public static var hitboxLocation:String = 'Bottom';
+public static var hitboxmode:String = 'New';
+public static var hitboxtype:String = 'Gradient';
+public static var storageType:String = 'EXTERNAL_DATA';
+public static var hitboxhint:Bool = false;
+public static var VirtualPadAlpha:Float = 0.75;
+public static var hitboxalpha:Float = 0.7;
+```
+
+After
+```haxe
+FlxG.save.data.downScroll = downScroll;
+```
+
+Add
+```haxe
+FlxG.save.data.extraKeys = extraKeys;
+FlxG.save.data.hitboxLocation = hitboxLocation;
+FlxG.save.data.hitboxhint = hitboxhint;
+FlxG.save.data.hitboxmode = hitboxmode;
+FlxG.save.data.hitboxtype = hitboxtype;
+FlxG.save.data.storageType = storageType;
+FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
+FlxG.save.data.hitboxalpha = hitboxalpha;
+```
+
+After
+```haxe
+if(FlxG.save.data.downScroll != null) {
+	downScroll = FlxG.save.data.downScroll;
+}
+```
+
+Add
+```haxe
+if(FlxG.save.data.extraKeys != null) {
+	extraKeys = FlxG.save.data.extraKeys;
+}
+if(FlxG.save.data.hitboxLocation != null) {
+	hitboxLocation = FlxG.save.data.hitboxLocation;
+}
+if(FlxG.save.data.hitboxhint != null) {
+	hitboxhint = FlxG.save.data.hitboxhint;
+}
+if(FlxG.save.data.hitboxmode != null) {
+	hitboxmode = FlxG.save.data.hitboxmode;
+}
+if(FlxG.save.data.hitboxtype != null) {
+	hitboxtype = FlxG.save.data.hitboxtype;
+}
+if(FlxG.save.data.storageType != null) {
+	storageType = FlxG.save.data.storageType;
+}
+if(FlxG.save.data.VirtualPadAlpha != null) {
+	VirtualPadAlpha = FlxG.save.data.VirtualPadAlpha;
+}
+if(FlxG.save.data.hitboxalpha != null) {
+	hitboxalpha = FlxG.save.data.hitboxalpha;
+}
+```
+
 1. You Need to install spesific `extension-androidtools` version for 0.6.3
 
 To Install it You Need To Open Command prompt/PowerShell And Type
@@ -547,78 +618,7 @@ if (justTouched)
 #end
 ```
 
-13. Now we need to add more thing for Mobile Controls
-
-On ClientPrefs.hx after
-```haxe
-public static var downScroll:Bool = false;
-```
-
-Add
-```haxe
-public static var extraKeys:Int = 2;
-public static var hitboxLocation:String = 'Bottom';
-public static var hitboxmode:String = 'New';
-public static var hitboxtype:String = 'Gradient';
-public static var storageType:String = 'EXTERNAL';
-public static var hitboxhint:Bool = false;
-public static var VirtualPadAlpha:Float = 0.75;
-public static var hitboxalpha:Float = 0.7;
-```
-
-After
-```haxe
-FlxG.save.data.downScroll = downScroll;
-```
-
-Add
-```haxe
-FlxG.save.data.extraKeys = extraKeys;
-FlxG.save.data.hitboxLocation = hitboxLocation;
-FlxG.save.data.hitboxhint = hitboxhint;
-FlxG.save.data.hitboxmode = hitboxmode;
-FlxG.save.data.hitboxtype = hitboxtype;
-FlxG.save.data.storageType = storageType;
-FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
-FlxG.save.data.hitboxalpha = hitboxalpha;
-```
-
-After
-```haxe
-if(FlxG.save.data.downScroll != null) {
-	downScroll = FlxG.save.data.downScroll;
-}
-```
-
-Add
-```haxe
-if(FlxG.save.data.extraKeys != null) {
-	extraKeys = FlxG.save.data.extraKeys;
-}
-if(FlxG.save.data.hitboxLocation != null) {
-	hitboxLocation = FlxG.save.data.hitboxLocation;
-}
-if(FlxG.save.data.hitboxhint != null) {
-	hitboxhint = FlxG.save.data.hitboxhint;
-}
-if(FlxG.save.data.hitboxmode != null) {
-	hitboxmode = FlxG.save.data.hitboxmode;
-}
-if(FlxG.save.data.hitboxtype != null) {
-	hitboxtype = FlxG.save.data.hitboxtype;
-}
-if(FlxG.save.data.storageType != null) {
-	storageType = FlxG.save.data.storageType;
-}
-if(FlxG.save.data.VirtualPadAlpha != null) {
-	VirtualPadAlpha = FlxG.save.data.VirtualPadAlpha;
-}
-if(FlxG.save.data.hitboxalpha != null) {
-	hitboxalpha = FlxG.save.data.hitboxalpha;
-}
-```
-
-14. CopyState (optional)
+13. CopyState (optional)
 
 in Main.hx
 On This Line
