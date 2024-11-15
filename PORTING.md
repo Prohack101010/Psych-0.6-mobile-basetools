@@ -54,6 +54,10 @@ public static var storageType:String = 'EXTERNAL_DATA';
 public static var hitboxhint:Bool = false;
 public static var VirtualPadAlpha:Float = 0.75;
 public static var hitboxalpha:Float = 0.7;
+public static var extraKeyReturn1:String = 'SHIFT';
+public static var extraKeyReturn2:String = 'SPACE';
+public static var extraKeyReturn3:String = 'Q';
+public static var extraKeyReturn4:String = 'E';
 ```
 
 After
@@ -71,6 +75,10 @@ FlxG.save.data.hitboxtype = hitboxtype;
 FlxG.save.data.storageType = storageType;
 FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
 FlxG.save.data.hitboxalpha = hitboxalpha;
+FlxG.save.data.extraKeyReturn1 = extraKeyReturn1;
+FlxG.save.data.extraKeyReturn2 = extraKeyReturn2;
+FlxG.save.data.extraKeyReturn3 = extraKeyReturn3;
+FlxG.save.data.extraKeyReturn4 = extraKeyReturn5;
 ```
 
 After
@@ -105,6 +113,18 @@ if(FlxG.save.data.VirtualPadAlpha != null) {
 }
 if(FlxG.save.data.hitboxalpha != null) {
 	hitboxalpha = FlxG.save.data.hitboxalpha;
+}
+if(FlxG.save.data.extraKeyReturn1 != null) {
+	extraKeyReturn1 = FlxG.save.data.extraKeyReturn1;
+}
+if(FlxG.save.data.extraKeyReturn2 != null) {
+	extraKeyReturn2 = FlxG.save.data.extraKeyReturn2;
+}
+if(FlxG.save.data.extraKeyReturn3 != null) {
+	extraKeyReturn3 = FlxG.save.data.extraKeyReturn3;
+}
+if(FlxG.save.data.extraKeyReturn4 != null) {
+	extraKeyReturn4 = FlxG.save.data.extraKeyReturn4;
 }
 ```
 
@@ -210,11 +230,10 @@ Add
 		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addHitboxNOTES(action, Hitbox.buttonDown, state));
 		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonLeft, state));
 		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonRight, state));
-		//Extra Controls Later
-		inline forEachBound(Control.NOTE_UP, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra1, state));
-		inline forEachBound(Control.NOTE_DOWN, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra2, state));
-		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra3, state));
-		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra4, state));
+		inline forEachBound(Control.EXTRA1, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra1, state));
+		inline forEachBound(Control.EXTRA2, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra2, state));
+		inline forEachBound(Control.EXTRA3, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra3, state));
+		inline forEachBound(Control.EXTRA4, (action, state) -> addHitboxNOTES(action, Hitbox.buttonExtra4, state));
 	}
 
 	public function setVirtualPadUI(VirtualPad:FlxVirtualPad, DPad:FlxDPadMode, Action:FlxActionMode):Void
@@ -341,6 +360,196 @@ Add
 			}
 		}
 	}	
+```
+
+After
+```haxe
+var RESET = "reset";
+```
+
+Add
+```haxe
+	var EXTRA1 = 'extra1';
+	var EXTRA1_P = 'extra1-press';
+	var EXTRA1_R = 'extra1-release';
+	var EXTRA2 = 'extra2';
+	var EXTRA2_P = 'extra2-press';
+	var EXTRA2_R = 'extra2-release';
+	var EXTRA3 = 'extra3';
+	var EXTRA3_P = 'extra3-press';
+	var EXTRA3_R = 'extra3-release';
+	var EXTRA4 = 'extra4';
+	var EXTRA4_P = 'extra4-press';
+	var EXTRA4_R = 'extra4-release';
+```
+
+After these lines
+```haxe
+	ACCEPT;
+	BACK;
+	PAUSE;
+```
+
+Add
+```haxe
+	EXTRA1;
+	EXTRA2;
+	EXTRA3;
+	EXTRA4;
+```
+
+After
+```haxe
+var _reset = new FlxActionDigital(Action.RESET);
+```
+
+Add
+```haxe
+	var _extra1 = new FlxActionDigital(Action.EXTRA1);
+	var _extra1P = new FlxActionDigital(Action.EXTRA1_P);
+	var _extra1R = new FlxActionDigital(Action.EXTRA1_R);
+	var _extra2 = new FlxActionDigital(Action.EXTRA2);
+	var _extra2P = new FlxActionDigital(Action.EXTRA2_P);
+	var _extra2R = new FlxActionDigital(Action.EXTRA2_R);
+	var _extra3 = new FlxActionDigital(Action.EXTRA3);
+	var _extra3P = new FlxActionDigital(Action.EXTRA3_P);
+	var _extra3R = new FlxActionDigital(Action.EXTRA3_R);
+	var _extra4 = new FlxActionDigital(Action.EXTRA4);
+	var _extra4P = new FlxActionDigital(Action.EXTRA4_P);
+	var _extra4R = new FlxActionDigital(Action.EXTRA4_R);
+```
+
+After these lines
+```haxe
+	public var RESET(get, never):Bool;
+
+	inline function get_RESET()
+		return _reset.check();
+```
+
+Add
+```haxe
+	public var EXTRA1(get, never):Bool;
+
+	inline function get_EXTRA1()
+		return _extra1.check();		
+	
+	public var EXTRA1_R(get, never):Bool;
+
+	inline function get_EXTRA1_R()
+		return _extra1R.check();		
+		
+	public var EXTRA1_P(get, never):Bool;
+
+	inline function get_EXTRA1_P()
+		return _extra1P.check();
+	
+	public var EXTRA2(get, never):Bool;
+
+	inline function get_EXTRA2()
+		return _extra2.check();		
+	
+	public var EXTRA2_R(get, never):Bool;
+
+	inline function get_EXTRA2_R()
+		return _extra2R.check();		
+		
+	public var EXTRA2_P(get, never):Bool;
+
+	inline function get_EXTRA2_P()
+		return _extra2P.check();			
+
+	public var EXTRA3(get, never):Bool;
+
+	inline function get_EXTRA3()
+		return _extra3.check();		
+	
+	public var EXTRA3_R(get, never):Bool;
+
+	inline function get_EXTRA3_R()
+		return _extra3R.check();		
+		
+	public var EXTRA3_P(get, never):Bool;
+
+	inline function get_EXTRA3_P()
+		return _extra3P.check();
+
+	public var EXTRA4(get, never):Bool;
+
+	inline function get_EXTRA4()
+		return _extra4.check();		
+	
+	public var EXTRA4_R(get, never):Bool;
+
+	inline function get_EXTRA4_R()
+		return _extra4R.check();		
+		
+	public var EXTRA4_P(get, never):Bool;
+
+	inline function get_EXTRA4_P()
+		return _extra4P.check();
+```
+
+After these lines
+```haxe
+		add(_back);
+		add(_pause);
+		add(_reset);
+```
+
+Add
+```haxe
+		add(_extra1);
+		add(_extra1P);
+		add(_extra1R);
+		add(_extra2);
+		add(_extra2P);
+		add(_extra2R);
+		add(_extra3);
+		add(_extra3P);
+		add(_extra3R);
+		add(_extra4);
+		add(_extra4P);
+		add(_extra4R);
+```
+
+After
+```haxe
+case RESET: _reset;
+```
+
+Add
+```haxe
+			case EXTRA1: _extra1;
+			case EXTRA2: _extra2;		
+			case EXTRA3: _extra3;
+			case EXTRA4: _extra4;
+```
+
+After these lines
+```haxe
+			case RESET:
+				func(_reset, JUST_PRESSED);
+```
+
+Add
+```haxe
+			case EXTRA1:
+				func(_extra1, PRESSED);
+				func(_extra1P, JUST_PRESSED);
+				func(_extra1R, JUST_RELEASED);
+			case EXTRA2:
+				func(_extra2, PRESSED);
+				func(_extra2P, JUST_PRESSED);
+				func(_extra2R, JUST_RELEASED);
+			case EXTRA3:
+				func(_extra3, PRESSED);
+				func(_extra3P, JUST_PRESSED);
+				func(_extra3R, JUST_RELEASED);
+			case EXTRA4:
+				func(_extra4, PRESSED);
+				func(_extra4P, JUST_PRESSED);
+				func(_extra4R, JUST_RELEASED);
 ```
 
 5. Setup MusicBeatState.hx
@@ -618,7 +827,327 @@ if (justTouched)
 #end
 ```
 
-13. CopyState (optional)
+13. Finish Extra Controls
+
+in FunkinLua.hx after these lines
+```haxe
+    	public var camTarget:FlxCamera;
+	public var scriptName:String = '';
+	public var closed:Bool = false;
+```
+
+Add
+```haxe
+    	public var extra1:String = ClientPrefs.extraKeyReturn1.toUpperCase();
+	public var extra2:String = ClientPrefs.extraKeyReturn2.toUpperCase();
+	public var extra3:String = ClientPrefs.extraKeyReturn3.toUpperCase();
+	public var extra4:String = ClientPrefs.extraKeyReturn4.toUpperCase();
+```
+
+On This Line
+```haxe
+	    	Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String)
+		{
+			return Reflect.getProperty(FlxG.keys.justPressed, name);
+		});
+		Lua_helper.add_callback(lua, "keyboardPressed", function(name:String)
+		{
+			return Reflect.getProperty(FlxG.keys.pressed, name);
+		});
+		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String)
+		{
+			return Reflect.getProperty(FlxG.keys.justReleased, name);
+		});
+```
+
+Replace It With
+```haxe
+	    	Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String)
+		{
+			#if mobile
+            if (MusicBeatState.mobilec.newhbox != null && ClientPrefs.extraKeys != 0){
+                if (name == extra1 && MusicBeatState.mobilec.newhbox.buttonExtra1.justPressed)
+    			    return true;
+			    if (name == extra2 && MusicBeatState.mobilec.newhbox.buttonExtra2.justPressed)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.newhbox.buttonExtra3.justPressed)
+    			    return true;
+                if (name == extra4 && MusicBeatState.mobilec.newhbox.buttonExtra4.justPressed)
+    			    return true;
+            }
+            
+            if (MusicBeatState.mobilec.vpad != null && ClientPrefs.extraKeys != 0){
+                if (name == extra1 && MusicBeatState.mobilec.vpad.buttonExtra1.justPressed)
+    			    return true;
+			    if (name == extra2 && MusicBeatState.mobilec.vpad.buttonExtra2.justPressed)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.vpad.buttonExtra3.justPressed)
+    			    return true;
+                if (name == extra4 && MusicBeatState.mobilec.vpad.buttonExtra4.justPressed)
+    			    return true;
+            }
+            #end
+			return Reflect.getProperty(FlxG.keys.justPressed, name);
+		});
+		Lua_helper.add_callback(lua, "keyboardPressed", function(name:String)
+		{
+		     #if mobile
+           if (MusicBeatState.mobilec.newhbox != null && ClientPrefs.extraKeys != 0){
+			    if (name == extra1 && MusicBeatState.mobilec.newhbox.buttonExtra1.pressed)
+    			    return true;
+                if (name == extra2 && MusicBeatState.mobilec.newhbox.buttonExtra2.pressed)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.newhbox.buttonExtra3.pressed)
+    			    return true;
+                if (name == extra4 && MusicBeatState.mobilec.newhbox.buttonExtra4.pressed)
+    			    return true;
+           }
+           if (MusicBeatState.mobilec.vpad != null && ClientPrefs.extraKeys != 0){
+                if (name == extra4 && MusicBeatState.mobilec.vpad.buttonExtra4.pressed)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.vpad.buttonExtra3.pressed)
+    			    return true;
+			    if (name == extra2 && MusicBeatState.mobilec.vpad.buttonExtra2.pressed)
+    			    return true;                          
+                if (name == extra1 && MusicBeatState.mobilec.vpad.buttonExtra1.pressed)
+    			    return true;
+           }
+           #end
+			return Reflect.getProperty(FlxG.keys.pressed, name);
+		});
+		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String)
+		{
+		    #if mobile
+           if (MusicBeatState.mobilec.newhbox != null && ClientPrefs.extraKeys != 0){
+                if (name == extra1 && MusicBeatState.mobilec.newhbox.buttonExtra1.justReleased)
+    			    return true;
+			    if (name == extra2 && MusicBeatState.mobilec.newhbox.buttonExtra2.justReleased)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.newhbox.buttonExtra3.justReleased)
+    			    return true;
+                if (name == extra4 && MusicBeatState.mobilec.newhbox.buttonExtra4.justReleased)
+    			    return true;
+           }
+           if (MusicBeatState.mobilec.vpad != null && ClientPrefs.extraKeys != 0){
+                if (name == extra1 && MusicBeatState.mobilec.vpad.buttonExtra1.justReleased)
+    			    return true;
+			    if (name == extra2 && MusicBeatState.mobilec.vpad.buttonExtra2.justReleased)
+    			    return true;
+                if (name == extra3 && MusicBeatState.mobilec.vpad.buttonExtra3.justReleased)
+    			    return true;
+                if (name == extra4 && MusicBeatState.mobilec.vpad.buttonExtra4.justReleased)
+    			    return true;
+           }
+           #end
+			return Reflect.getProperty(FlxG.keys.justReleased, name);
+		});
+```
+
+On This Line
+```haxe
+	    	Lua_helper.add_callback(lua, "keyJustPressed", function(name:String) {
+			var key:Bool = false;
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_P');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_P');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_P');
+				case 'accept': key = PlayState.instance.getControl('ACCEPT');
+				case 'back': key = PlayState.instance.getControl('BACK');
+				case 'pause': key = PlayState.instance.getControl('PAUSE');
+				case 'reset': key = PlayState.instance.getControl('RESET');
+				case 'space': key = FlxG.keys.justPressed.SPACE;//an extra key for convinience
+			}
+			return key;
+		});
+		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
+			var key:Bool = false;
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
+				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
+			}
+			return key;
+		});
+		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
+			var key:Bool = false;
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_R');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');
+				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
+			}
+			return key;
+		});
+```
+
+Replace It With
+```haxe
+	    	Lua_helper.add_callback(lua, "keyJustPressed", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1_P');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2_P');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3_P');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4_P');
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_P');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_P');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_P');
+				case 'accept': key = PlayState.instance.getControl('ACCEPT');
+				case 'back': key = PlayState.instance.getControl('BACK');
+				case 'pause': key = PlayState.instance.getControl('PAUSE');
+				case 'reset': key = PlayState.instance.getControl('RESET');	
+				case 'space': key = FlxG.keys.justPressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_P');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_P');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_P');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_P');
+			}
+			return key;
+		});
+		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4');
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
+				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT');
+			}
+			return key;
+		});
+		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1_R');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2_R');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3_R');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4_R');
+			switch(name) {
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_R');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');		
+				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_R');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_R');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_R');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_R');
+			}
+			return key;
+		});
+```
+
+On This Line
+```haxe
+	    Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String) {
+			@:privateAccess
+			var killMe:Array<String> = variable.split('.');
+			if(killMe.length > 1) {
+				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
+				for (i in 1...killMe.length-1) {
+					coverMeInPiss = getVarInArray(coverMeInPiss, killMe[i]);
+				}
+				return getVarInArray(coverMeInPiss, killMe[killMe.length-1]);
+			}
+			return getVarInArray(Type.resolveClass(classVar), variable);
+		});
+```
+
+Replace It With
+```haxe
+    		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String) {
+			@:privateAccess
+			var myClass:Dynamic = classCheck(classVar);
+			var variableplus:String = varCheck(myClass, variable);
+			var killMe:Array<String> = variable.split('.');
+			if (MusicBeatState.mobilec != null && myClass == 'flixel.FlxG' && variableplus.indexOf('key') != -1){
+    		    var check:Dynamic;
+    		    check = specialKeyCheck(variableplus); //fuck you old lua 🙃
+    		    if (check != null) return check;
+    		}
+           
+			if(killMe.length > 1) {
+				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
+				for (i in 1...killMe.length-1) {
+					coverMeInPiss = getVarInArray(coverMeInPiss, killMe[i]);
+				}
+				return getVarInArray(coverMeInPiss, killMe[killMe.length-1]);
+			}
+			return getVarInArray(Type.resolveClass(classVar), variable);
+		});
+```
+
+After
+```haxe
+    	public function stop() {
+		#if LUA_ALLOWED
+		if(lua == null) {
+			return;
+		}
+
+		Lua.close(lua);
+		lua = null;
+		#end
+	}
+```
+
+Add
+```haxe
+    	public static function varCheck(className:Dynamic, variable:String):String{
+	    return variable;
+	}
+	
+	public static function classCheck(className:String):Dynamic
+	{
+	    return Type.resolveClass(className);
+	}
+	
+	public static function specialKeyCheck(keyName:String):Dynamic
+	{
+	    var textfix:Array<String> = keyName.trim().split('.');
+	    var type:String = textfix[1].trim();
+	    var key:String = textfix[2].trim();    			
+	    var extraControl:Dynamic = null;
+	    
+	    for (num in 1...5){
+	        if (ClientPrefs.extraKeys >= num && key == Reflect.field(ClientPrefs, 'extraKeyReturn' + num)){
+	            if (MusicBeatState.mobilec.newhbox != null)
+	                extraControl = Reflect.getProperty(MusicBeatState.mobilec.newhbox, 'buttonExtra' + num);	            
+	            else
+	                extraControl = Reflect.getProperty(MusicBeatState.mobilec.vpad, 'buttonExtra' + num);
+	            if (Reflect.getProperty(extraControl, type))
+	                return true;
+	        }
+	    }	    	    
+	    return null;
+	}
+```
+
+14. CopyState (optional)
 
 in Main.hx
 On This Line
