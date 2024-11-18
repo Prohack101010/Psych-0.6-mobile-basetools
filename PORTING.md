@@ -188,6 +188,7 @@ override function update()
 
 Add
 ```haxe
+        #if mobile
 	public var trackedInputsUI:Array<FlxActionInput> = [];
 	public var trackedInputsNOTES:Array<FlxActionInput> = [];
 
@@ -359,7 +360,8 @@ Add
 				}
 			}
 		}
-	}	
+	}
+        #end	
 ```
 
 After
@@ -369,6 +371,7 @@ var RESET = "reset";
 
 Add
 ```haxe
+        #if mobile
 	var EXTRA1 = 'extra1';
 	var EXTRA1_P = 'extra1-press';
 	var EXTRA1_R = 'extra1-release';
@@ -381,6 +384,7 @@ Add
 	var EXTRA4 = 'extra4';
 	var EXTRA4_P = 'extra4-press';
 	var EXTRA4_R = 'extra4-release';
+        #end
 ```
 
 After these lines
@@ -392,10 +396,12 @@ After these lines
 
 Add
 ```haxe
+        #if mobile
 	EXTRA1;
 	EXTRA2;
 	EXTRA3;
 	EXTRA4;
+        #end
 ```
 
 After
@@ -405,6 +411,7 @@ var _reset = new FlxActionDigital(Action.RESET);
 
 Add
 ```haxe
+        #if mobile
 	var _extra1 = new FlxActionDigital(Action.EXTRA1);
 	var _extra1P = new FlxActionDigital(Action.EXTRA1_P);
 	var _extra1R = new FlxActionDigital(Action.EXTRA1_R);
@@ -417,6 +424,7 @@ Add
 	var _extra4 = new FlxActionDigital(Action.EXTRA4);
 	var _extra4P = new FlxActionDigital(Action.EXTRA4_P);
 	var _extra4R = new FlxActionDigital(Action.EXTRA4_R);
+        #end
 ```
 
 After these lines
@@ -429,6 +437,7 @@ After these lines
 
 Add
 ```haxe
+        #if mobile
 	public var EXTRA1(get, never):Bool;
 
 	inline function get_EXTRA1()
@@ -488,6 +497,7 @@ Add
 
 	inline function get_EXTRA4_P()
 		return _extra4P.check();
+        #end
 ```
 
 After these lines
@@ -499,6 +509,7 @@ After these lines
 
 Add
 ```haxe
+                #if mobile
 		add(_extra1);
 		add(_extra1P);
 		add(_extra1R);
@@ -511,6 +522,7 @@ Add
 		add(_extra4);
 		add(_extra4P);
 		add(_extra4R);
+                #end
 ```
 
 After
@@ -520,10 +532,12 @@ case RESET: _reset;
 
 Add
 ```haxe
+			#if mobile
 			case EXTRA1: _extra1;
 			case EXTRA2: _extra2;		
 			case EXTRA3: _extra3;
 			case EXTRA4: _extra4;
+			#end
 ```
 
 After these lines
@@ -534,6 +548,7 @@ After these lines
 
 Add
 ```haxe
+			#if mobile
 			case EXTRA1:
 				func(_extra1, PRESSED);
 				func(_extra1P, JUST_PRESSED);
@@ -550,6 +565,7 @@ Add
 				func(_extra4, PRESSED);
 				func(_extra4P, JUST_PRESSED);
 				func(_extra4R, JUST_RELEASED);
+			#end
 ```
 
 5. Setup MusicBeatState.hx
@@ -569,6 +585,7 @@ inline function get_controls():Controls
 
 Add
 ```haxe
+	#if mobile
 	public static var checkHitbox:Bool = false;
 	
 	var _virtualpad:FlxVirtualPad;
@@ -658,14 +675,17 @@ Add
 		if (mobilec != null)
 			mobilec = FlxDestroyUtil.destroy(mobilec);
 	}
+	#end
 ```
 
 6. Setup MusicBeatSubstate.hx
 
 In the lines you import things add
 ```haxe
+#if mobile
 import flixel.input.actions.FlxActionInput;
 import mobile.flixel.FlxVirtualPad;
+#end
 ```
 
 After these lines
@@ -676,6 +696,7 @@ inline function get_controls():Controls
 
 Add
 ```haxe
+	#if mobile
 	var _virtualpad:FlxVirtualPad;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
@@ -712,6 +733,7 @@ Add
 		if (_virtualpad != null)
 			_virtualpad = FlxDestroyUtil.destroy(_virtualpad);
 	}
+	#end
 ```
 
 And somehow you finished adding the mobile controls to your mod now on every state/substate add
@@ -801,7 +823,9 @@ public function new()
 
 Add
 ```haxe
+#if mobile
 SUtil.gameCrashCheck();
+#end
 ```
 
 11. File Saver
@@ -838,10 +862,12 @@ in FunkinLua.hx after these lines
 
 Add
 ```haxe
+	#if mobile
     	public var extra1:String = ClientPrefs.extraKeyReturn1.toUpperCase();
 	public var extra2:String = ClientPrefs.extraKeyReturn2.toUpperCase();
 	public var extra3:String = ClientPrefs.extraKeyReturn3.toUpperCase();
 	public var extra4:String = ClientPrefs.extraKeyReturn4.toUpperCase();
+	#end
 ```
 
 On This Line
@@ -988,6 +1014,7 @@ Replace It With
 ```haxe
 	    	Lua_helper.add_callback(lua, "keyJustPressed", function(name:String) {
 			var key:Bool = false;
+			#if mobile
 			if (name == extra1)
 			    key = PlayState.instance.getControl('EXTRA1_P');
 		    if (name == extra2)
@@ -996,6 +1023,7 @@ Replace It With
 		        key = PlayState.instance.getControl('EXTRA3_P');
 		    if (name == extra4)
 		        key = PlayState.instance.getControl('EXTRA4_P');
+			#end
 			switch(name) {
 				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_P');
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
@@ -1015,6 +1043,7 @@ Replace It With
 		});
 		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
 			var key:Bool = false;
+			#if mobile
 			if (name == extra1)
 			    key = PlayState.instance.getControl('EXTRA1');
 		    if (name == extra2)
@@ -1023,6 +1052,7 @@ Replace It With
 		        key = PlayState.instance.getControl('EXTRA3');
 		    if (name == extra4)
 		        key = PlayState.instance.getControl('EXTRA4');
+			#end
 			switch(name) {
 				case 'left': key = PlayState.instance.getControl('NOTE_LEFT');
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
@@ -1038,6 +1068,7 @@ Replace It With
 		});
 		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
 			var key:Bool = false;
+			#if mobile
 			if (name == extra1)
 			    key = PlayState.instance.getControl('EXTRA1_R');
 		    if (name == extra2)
@@ -1046,6 +1077,7 @@ Replace It With
 		        key = PlayState.instance.getControl('EXTRA3_R');
 		    if (name == extra4)
 		        key = PlayState.instance.getControl('EXTRA4_R');
+			#end
 			switch(name) {
 				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_R');
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
@@ -1081,14 +1113,18 @@ Replace It With
 ```haxe
     		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String) {
 			@:privateAccess
+			#if mobile
 			var myClass:Dynamic = classCheck(classVar);
 			var variableplus:String = varCheck(myClass, variable);
+			#end
 			var killMe:Array<String> = variable.split('.');
+			#if mobile
 			if (MusicBeatState.mobilec != null && myClass == 'flixel.FlxG' && variableplus.indexOf('key') != -1){
     		    var check:Dynamic;
     		    check = specialKeyCheck(variableplus); //fuck you old lua 🙃
     		    if (check != null) return check;
     		}
+			#end
            
 			if(killMe.length > 1) {
 				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
@@ -1117,6 +1153,7 @@ After
 
 Add
 ```haxe
+	#if mobile
     	public static function varCheck(className:Dynamic, variable:String):String{
 	    return variable;
 	}
@@ -1145,6 +1182,7 @@ Add
 	    }	    	    
 	    return null;
 	}
+	#end
 ```
 
 14. CopyState (optional)
