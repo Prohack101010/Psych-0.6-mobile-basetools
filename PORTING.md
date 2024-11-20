@@ -120,11 +120,11 @@ Add
                 wideScreen = FlxG.save.data.wideScreen;
 ```
 
-1. You Need to install spesific `extension-androidtools` version for 0.6.3
+1. You Need to install `extension-androidtools` version
 
 To Install it You Need To Open Command prompt/PowerShell And Type
 ```cmd
-haxelib git extension-androidtools https://github.com/MAJigsaw77/extension-androidtools.git 727693f0a76c6e396df675bb0ed95d7639a4db01
+haxelib git extension-androidtools https://github.com/MAJigsaw77/extension-androidtools.git
 ```
 
 2. Download the repository code and paste it in your source code folder
