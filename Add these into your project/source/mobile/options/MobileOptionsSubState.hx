@@ -32,16 +32,16 @@ import openfl.Lib;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.File;
-import SUtil;
 import mobile.options.MobileOptionsSubState;
+import mobile.backend.StorageUtil;
 
 using StringTools;
 
 class MobileOptionsSubState extends BaseOptionsMenu
 {
     #if android
-	var storageTypes:Array<String> = ["EXTERNAL", "EXTERNAL_DATA", "EXTERNAL_OBB", "EXTERNAL_MEDIA"];
-	var externalPaths:Array<String> = SUtil.checkExternalPaths(true);
+	var storageTypes:Array<String> = ["EXTERNAL_DATA", "EXTERNAL_OBB", "EXTERNAL_MEDIA", "EXTERNAL"];
+	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
 	final lastStorageType:String = ClientPrefs.storageType;
 	#end
 	
@@ -81,7 +81,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		'hitboxLocation',
 		'string',
 		'Bottom',
-		['Bottom', 'Top', 'Middle']);
+		['Bottom', 'Top']);
 	addOption(option);
 		  
 	var option:Option = new Option('Hitbox Mode:',
@@ -118,6 +118,15 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	option.changeValue = 0.1;
 	option.decimals = 1;
 	addOption(option);
+	
+	#if mobile
+	var option:Option = new Option('Wide Screen Mode',
+		'If checked, The game will stetch to fill your whole screen. (WARNING: Can result in bad visuals & break some mods that resizes the game/cameras)',
+		'wideScreen',
+		'bool');
+	option.onChange = () -> FlxG.scaleMode = new MobileScaleMode();
+	addOption(option);
+	#end
 		
 	#if android
 	var option:Option = new Option('Storage Type',
@@ -147,7 +156,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		if (ClientPrefs.storageType != lastStorageType) {
 			onStorageChange();
 			ClientPrefs.saveSettings();
-			SUtil.showPopUp('Storage Type has been changed and you needed restart the game!!\nPress OK to close the game.', 'Notice!');
+			CoolUtil.showPopUp('Storage Type has been changed and you needed restart the game!!\nPress OK to close the game.', 'Notice!');
 			lime.system.System.exit(0);
 		}
 		#end
