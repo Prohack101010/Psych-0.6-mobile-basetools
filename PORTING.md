@@ -46,18 +46,19 @@ public static var downScroll:Bool = false;
 
 Add
 ```haxe
-public static var extraKeys:Int = 2;
-public static var hitboxLocation:String = 'Bottom';
-public static var hitboxmode:String = 'New';
-public static var hitboxtype:String = 'Gradient';
-public static var storageType:String = 'EXTERNAL_DATA';
-public static var hitboxhint:Bool = false;
-public static var VirtualPadAlpha:Float = 0.75;
-public static var hitboxalpha:Float = 0.7;
-public static var extraKeyReturn1:String = 'SHIFT';
-public static var extraKeyReturn2:String = 'SPACE';
-public static var extraKeyReturn3:String = 'Q';
-public static var extraKeyReturn4:String = 'E';
+    public static var extraKeys:Int = 2;
+    public static var hitboxLocation:String = 'Bottom';
+    public static var hitboxmode:String = 'New';
+    public static var hitboxtype:String = 'Gradient';
+    public static var storageType:String = 'EXTERNAL_DATA';
+    public static var hitboxhint:Bool = false;
+    public static var VirtualPadAlpha:Float = 0.75;
+    public static var hitboxalpha:Float = 0.7;
+    public static var extraKeyReturn1:String = 'SHIFT';
+    public static var extraKeyReturn2:String = 'SPACE';
+    public static var extraKeyReturn3:String = 'Q';
+    public static var extraKeyReturn4:String = 'E';
+    public static var wideScreen:Bool = false;
 ```
 
 After
@@ -67,18 +68,19 @@ FlxG.save.data.downScroll = downScroll;
 
 Add
 ```haxe
-FlxG.save.data.extraKeys = extraKeys;
-FlxG.save.data.hitboxLocation = hitboxLocation;
-FlxG.save.data.hitboxhint = hitboxhint;
-FlxG.save.data.hitboxmode = hitboxmode;
-FlxG.save.data.hitboxtype = hitboxtype;
-FlxG.save.data.storageType = storageType;
-FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
-FlxG.save.data.hitboxalpha = hitboxalpha;
-FlxG.save.data.extraKeyReturn1 = extraKeyReturn1;
-FlxG.save.data.extraKeyReturn2 = extraKeyReturn2;
-FlxG.save.data.extraKeyReturn3 = extraKeyReturn3;
-FlxG.save.data.extraKeyReturn4 = extraKeyReturn4;
+        FlxG.save.data.extraKeys = extraKeys;
+        FlxG.save.data.hitboxLocation = hitboxLocation;
+        FlxG.save.data.hitboxhint = hitboxhint;
+        FlxG.save.data.hitboxmode = hitboxmode;
+        FlxG.save.data.hitboxtype = hitboxtype;
+        FlxG.save.data.storageType = storageType;
+        FlxG.save.data.VirtualPadAlpha = VirtualPadAlpha;
+        FlxG.save.data.hitboxalpha = hitboxalpha;
+        FlxG.save.data.extraKeyReturn1 = extraKeyReturn1;
+        FlxG.save.data.extraKeyReturn2 = extraKeyReturn2;
+        FlxG.save.data.extraKeyReturn3 = extraKeyReturn3;
+        FlxG.save.data.extraKeyReturn4 = extraKeyReturn4;
+        FlxG.save.data.wideScreen = wideScreen;
 ```
 
 After
@@ -90,42 +92,32 @@ if(FlxG.save.data.downScroll != null) {
 
 Add
 ```haxe
-if(FlxG.save.data.extraKeys != null) {
-	extraKeys = FlxG.save.data.extraKeys;
-}
-if(FlxG.save.data.hitboxLocation != null) {
-	hitboxLocation = FlxG.save.data.hitboxLocation;
-}
-if(FlxG.save.data.hitboxhint != null) {
-	hitboxhint = FlxG.save.data.hitboxhint;
-}
-if(FlxG.save.data.hitboxmode != null) {
-	hitboxmode = FlxG.save.data.hitboxmode;
-}
-if(FlxG.save.data.hitboxtype != null) {
-	hitboxtype = FlxG.save.data.hitboxtype;
-}
-if(FlxG.save.data.storageType != null) {
-	storageType = FlxG.save.data.storageType;
-}
-if(FlxG.save.data.VirtualPadAlpha != null) {
-	VirtualPadAlpha = FlxG.save.data.VirtualPadAlpha;
-}
-if(FlxG.save.data.hitboxalpha != null) {
-	hitboxalpha = FlxG.save.data.hitboxalpha;
-}
-if(FlxG.save.data.extraKeyReturn1 != null) {
-	extraKeyReturn1 = FlxG.save.data.extraKeyReturn1;
-}
-if(FlxG.save.data.extraKeyReturn2 != null) {
-	extraKeyReturn2 = FlxG.save.data.extraKeyReturn2;
-}
-if(FlxG.save.data.extraKeyReturn3 != null) {
-	extraKeyReturn3 = FlxG.save.data.extraKeyReturn3;
-}
-if(FlxG.save.data.extraKeyReturn4 != null) {
-	extraKeyReturn4 = FlxG.save.data.extraKeyReturn4;
-}
+        if(FlxG.save.data.extraKeys != null)
+        	extraKeys = FlxG.save.data.extraKeys;
+        if(FlxG.save.data.hitboxLocation != null)
+        	hitboxLocation = FlxG.save.data.hitboxLocation;
+        if(FlxG.save.data.hitboxhint != null)
+        	hitboxhint = FlxG.save.data.hitboxhint;
+        if(FlxG.save.data.hitboxmode != null)
+        	hitboxmode = FlxG.save.data.hitboxmode;
+        if(FlxG.save.data.hitboxtype != null)
+        	hitboxtype = FlxG.save.data.hitboxtype;
+        if(FlxG.save.data.storageType != null)
+        	storageType = FlxG.save.data.storageType;
+        if(FlxG.save.data.VirtualPadAlpha != null)
+        	VirtualPadAlpha = FlxG.save.data.VirtualPadAlpha;
+        if(FlxG.save.data.hitboxalpha != null)
+        	hitboxalpha = FlxG.save.data.hitboxalpha;
+        if(FlxG.save.data.extraKeyReturn1 != null)
+        	extraKeyReturn1 = FlxG.save.data.extraKeyReturn1;
+        if(FlxG.save.data.extraKeyReturn2 != null)
+        	extraKeyReturn2 = FlxG.save.data.extraKeyReturn2;
+        if(FlxG.save.data.extraKeyReturn3 != null)
+        	extraKeyReturn3 = FlxG.save.data.extraKeyReturn3;
+        if(FlxG.save.data.extraKeyReturn4 != null)
+        	extraKeyReturn4 = FlxG.save.data.extraKeyReturn4;
+        if(FlxG.save.data.wideScreen != null)
+                wideScreen = FlxG.save.data.wideScreen;
 ```
 
 1. You Need to install spesific `extension-androidtools` version for 0.6.3
@@ -148,7 +140,7 @@ On This Line
 Replace It With
 ```xml
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" resizable="false"/>
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true" />
 ```
 
 Then, After the Libraries, or where the packeges are located add
@@ -534,7 +526,7 @@ Add
 ```haxe
 			#if mobile
 			case EXTRA1: _extra1;
-			case EXTRA2: _extra2;		
+			case EXTRA2: _extra2;
 			case EXTRA3: _extra3;
 			case EXTRA4: _extra4;
 			#end
@@ -542,8 +534,8 @@ Add
 
 After these lines
 ```haxe
-			case RESET:
-				func(_reset, JUST_PRESSED);
+case RESET:
+	func(_reset, JUST_PRESSED);
 ```
 
 Add
@@ -572,9 +564,11 @@ Add
 
 In the lines you import things add
 ```haxe
+#if mobile
 import flixel.input.actions.FlxActionInput;
 import mobile.flixel.FlxVirtualPad;
 import flixel.util.FlxDestroyUtil;
+#end
 ```
 
 After these lines
@@ -757,10 +751,10 @@ addMobileControls();
 removeMobileControls();
 
 //to make the controls visible the code is
-mobileControls.visible = true;
+mobilec.visible = true;
 
 //to make the controls invisible the code is
-mobileControls.visible = false;
+mobilec.visible = false;
 ```
 
 7. Prevent the Android BACK Button
@@ -786,7 +780,7 @@ You can set one with
 #if android || FlxG.android.justReleased.BACK #end
 ```
 
-9. On `sys.FileSystem`, `sys.io.File` Stuff
+9. On `sys.FileSystem`, `sys.io.File` and `CrashHandler` Stuff
 
 This will make the game use the phone storage but you will have to add one thing in your source
 
@@ -797,35 +791,42 @@ public function new()
 
 Add
 ```haxe
-            #if mobile
-	    #if android
-		SUtil.doPermissionsShit();
-		if (!FileSystem.exists(SUtil.getStorageDirectory()))
-			FileSystem.createDirectory(SUtil.getStorageDirectory());
-		#end
-		Sys.setCwd(SUtil.getStorageDirectory());
-		#end
-		
+		#if mobile
 		#if android
-		if (!FileSystem.exists(SUtil.getStorageDirectory()))
-			FileSystem.createDirectory(SUtil.getStorageDirectory());
-	    #end
+		StorageUtil.requestPermissions();
+		#end
+		Sys.setCwd(StorageUtil.getStorageDirectory());
+		#end
+		CrashHandler.init();
 ```
 
 This will check for android storage permisions and the `assets` or `mods` directories
 
-10. On Crash Application Alert
+10. Use `MobileScaleMode` to resize the game
 
 On Main.hx after
 ```haxe
-public function new()
+#if html5
+FlxG.autoPause = false;
+FlxG.mouse.visible = false;
+#end
 ```
 
 Add
 ```haxe
-#if mobile
-SUtil.gameCrashCheck();
-#end
+		FlxG.fixedTimestep = false;
+		FlxG.game.focusLostFramerate = #if mobile 30 #else 60 #end;
+		#if web
+		FlxG.keys.preventDefaultKeys.push(TAB);
+		#else
+		FlxG.keys.preventDefaultKeys = [TAB];
+		#end
+
+		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
+
+		#if mobile
+		FlxG.scaleMode = new MobileScaleMode();
+		#end
 ```
 
 11. File Saver
@@ -833,7 +834,7 @@ SUtil.gameCrashCheck();
 This is a feature to save files with sys.io.File in phone storage in `saves` directory
 
 ```haxe
-SUtil.saveContent("your file name.txt", "lololol");
+StorageUtil.saveContent("your file name.txt", "lololol");
 ```
 
 12. Do an action when you press on the screen
@@ -1185,10 +1186,36 @@ Add
 	#end
 ```
 
-14. CopyState (optional)
+14. ShowPopUp
 
-in Main.hx
-On This Line
+in CoolUtil.hx, After This Line
+```haxe
+public static function browserLoad(site:String) {
+	#if linux
+	Sys.command('/usr/bin/xdg-open', [site]);
+	#else
+	FlxG.openURL(site);
+	#end
+}
+```
+
+Replace It With
+
+```haxe
+	public static function showPopUp(message:String, title:String):Void
+	{
+		#if android
+		AndroidTools.showAlertDialog(title, message, {name: "OK", func: null}, null);
+		#else
+		FlxG.stage.window.alert(message, title);
+		#end
+	}
+```
+
+
+16. CopyState (optional)
+
+in Main.hx, On This Line
 ```haxe
 	addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 ```
